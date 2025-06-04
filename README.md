@@ -1,10 +1,19 @@
 # Predicting Top 3 Drivers and Comparing Machine Learning Algorithms in iRacing
 
+**A real-time hybrid pipeline that merges iRacing’s historical API data with live telemetry to predict podium finishers every 3 seconds.**  
+Enabled through Python, SQL Server, and ML frameworks (XGBoost, Random Forest, RankNet + SHAP analysis).
+
+## License
+
+This project is licensed under Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).  
+Non-commercial use (including academic research) is permitted; commercial use requires written permission from the author.  
+See [LICENSE](LICENSE) for full legal text.
+
 ## Project Overview
 
-This project implements a hybrid pipeline that merges historical iRacing driver data with live telemetry to predict the top 3 finishers in real-time. By engineering time-decayed features and training various machine learning models (XGBoost, Random Forest, RankNet), the system aims to provide accurate predictions, enabling esports analytics and broadcast overlays. The predictions update every 3 seconds. RankNet has shown the best accuracy in testing.  SHAP analysis is performed to identify key predictors of success.
+This repository implements a hybrid data pipeline that merges historical iRacing driver data (via the iRacing Data API) with live telemetry (via the iRacing SDK) to predict the top 3 finishers in real time. Every 3 seconds, the system recalculates podium predictions using time-decayed features and three ML models—XGBoost, Random Forest, and RankNet—showing RankNet as the most accurate. A SHAP analysis identifies key predictive features. Use cases include esports analytics dashboards and broadcast overlays.
 
-*   **Repository URL:** [https://github.com/AntoineSpiteri2/predicting-the-top3-drivers-and-comparing-machine-learning-algorithms-in-iracing](https://github.com/AntoineSpiteri2/predicting-the-top3-drivers-and-comparing-machine-learning-algorithms-in-iracing)
+* Repository URL: [github.com/AntoineSpiteri2/predicting-the-top3-drivers-…](https://github.com/AntoineSpiteri2/predicting-the-top3-drivers-and-comparing-machine-learning-algorithms-in-iracing)
 
 ## Features and Functionality
 
@@ -156,7 +165,13 @@ There is no dedicated API endpoint for this project since it uses desktop applic
 
 ## License Information
 
-This project has no specified license. All rights are reserved by the authors.
+This project is licensed under Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0). 
+Non-commercial use is permitted; commercial use requires written permission from the author.
+
+## Data and Pretrained Models
+
+The dataset and pretrained models used by this project are **not** included in this repository. Redistribution of any data or models derived from iRacing requires explicit, written permission from iRacing.com Motorsport Simulations, LLC. Under the iRacing Terms of Use and End User License Agreement, you may not “make available to any third party … any information available through the Product, the Content, the Data, or the Trademarks” without prior consent :contentReference[oaicite:0]{index=0}. Similarly, the iRacing Website Conditions of Use prohibit using data mining, screen scraping, or other extraction tools without express permission :contentReference[oaicite:1]{index=1}. If you wish to upload or share this dataset or any pretrained models, please contact iRacing to obtain a proper license :contentReference[oaicite:2]{index=2}.
+
 
 ## Contact/Support Information
 
