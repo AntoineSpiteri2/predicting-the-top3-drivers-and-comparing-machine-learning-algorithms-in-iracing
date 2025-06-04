@@ -7,7 +7,6 @@ Enabled through Python, SQL Server, and ML frameworks (XGBoost, Random Forest, R
 
 This project is licensed under Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).  
 Non-commercial use (including academic research) is permitted; commercial use requires written permission from the author.  
-See [LICENSE](LICENSE) for full legal text.
 
 ## Project Overview
 
@@ -163,10 +162,7 @@ There is no dedicated API endpoint for this project since it uses desktop applic
 5.  **Submit a Pull Request:** Submit a pull request to the `main` branch of the original repository.
 6.  **Code Review:**  Your pull request will be reviewed by project maintainers.  Address any feedback and make necessary changes.
 
-## License Information
 
-This project is licensed under Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0). 
-Non-commercial use is permitted; commercial use requires written permission from the author.
 
 ## Data and Pretrained Models
 
