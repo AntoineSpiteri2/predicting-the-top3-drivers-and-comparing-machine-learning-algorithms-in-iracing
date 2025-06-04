@@ -1,0 +1,167 @@
+
+USE racing_data;
+use racing_data_Live
+--create database racing_data_Live
+--create database racing_data
+
+CREATE TABLE Race (
+    RaceID INT IDENTITY(1,1) PRIMARY KEY,
+    RaceDate DATE DEFAULT GETDATE(),
+    TrackTemp FLOAT NULL,
+    TrackTempCrew FLOAT NULL,
+    AirTemp FLOAT NULL,
+    RelativeHumidity FLOAT NULL,
+    WindVel FLOAT NULL,
+    WindDir FLOAT NULL,
+    Skies FLOAT NULL,
+    FogLevel FLOAT NULL,
+    Precipitation FLOAT NULL,
+	SolarAltitude float null,
+	SolarAzimuth float null,
+    WeatherDeclaredWet BIT NULL,
+	TrackLength float null,
+	StrengthOfField float null,
+	TotalLaps int null
+);
+
+
+
+CREATE TABLE Driver (
+    CustID NVARCHAR(256) PRIMARY KEY,
+    RaceID INT NULL,
+    CarIdx INT NULL,
+    num_official_sessions float NULL,
+    num_league_sessions float NULL,
+    num_official_wins float NULL,
+    num_league_wins float NULL,
+    starts FLOAT NULL,
+    wins FLOAT NULL,
+    top5 FLOAT NULL,
+    poles FLOAT NULL,
+    avg_start_position FLOAT NULL,
+    avg_finish_position FLOAT NULL,
+    laps FLOAT NULL,
+    laps_led FLOAT NULL,
+    avg_incidents FLOAT NULL,
+    avg_points FLOAT NULL,
+    win_percentage FLOAT NULL,
+    top5_percentage FLOAT NULL,
+    laps_led_percentage FLOAT NULL,
+    total_club_points FLOAT NULL,
+    poles_percentage FLOAT NULL,
+    Driver_avg_Irating FLOAT NULL,
+    DriverAvgTTRating FLOAT NULL,
+    DriverAvgLic_Sr float DEFAULT 0,
+    RecentForm FLOAT NULL,
+    RecoveryPerformance FLOAT NULL,
+    RecentIncidentsPerRace FLOAT NULL,
+    RecentPodiumrate FLOAT NULL,
+    RecentWinRate float NULL,
+	ClutchPerformanceRate float null,
+    PerformanceConsistency float NULL,
+    StressHandling float NULL,
+    AvgFinishInRain float NULL,
+    PerformanceIndex FLOAT NULL,
+    RankScoreAdjusted FLOAT DEFAULT 0,
+	--Disqualified bit DEFAULT 0,
+    FOREIGN KEY (RaceID) REFERENCES Race(RaceID) ON DELETE CASCADE
+
+);
+
+CREATE TABLE PastRaceTable (
+    subessionid INT,
+    CustID NVARCHAR(256) NOT NULL,
+    corners_per_lap FLOAT NULL,
+    event_strength_of_field FLOAT NULL,
+    num_caution_laps FLOAT NULL,
+    num_cautions float NULL,
+    avg_temp float NULL,
+    avg_wind_speed NVARCHAR(20) NULL,
+    precip_mm float NULL,
+    avg_rel_humidity float NULL,
+    finish_position float NULL,
+    laps_lead float NULL,
+    average_lap FLOAT NULL,
+    best_lap_time FLOAT NULL,
+    incidents float NULL,
+    starting_position float NULL,
+    in_top_3 BIT NULL,
+    Improvement FLOAT NULL,
+    BadWeatherIndex FLOAT NULL,
+    CornerEfficiency FLOAT NULL,
+    PitStopEfficiency FLOAT NULL,
+	CONSTRAINT PK_PastRace PRIMARY KEY (subessionid, CustID),
+    FOREIGN KEY (CustID) REFERENCES Driver(CustID) ON DELETE CASCADE
+);
+
+CREATE TABLE RealTimeLapData (
+    RaceID INT NOT NULL,
+    CustId NVARCHAR(256) NOT NULL,
+    CarIdx INT NULL,
+    Lap FLOAT NOT NULL,
+	LivePosition int NUll,
+    DriverGapInFront FLOAT NULL,
+    LapsBehind FLOAT NULL,
+    LiveLapsLed FLOAT NULL,
+    LiveLapsLedPercantage FLOAT NULL,
+    isleaderorclose BIT NULL,
+    PositionVolatility FLOAT NULL,
+    OvertakePotential FLOAT NULL,
+    ConsistencyScore FLOAT NULL,
+    LiveScoreAdjusted FLOAT NULL,
+    LiveLapsComplete FLOAT NULL,
+    Position FLOAT NULL,
+    InTop3Live BIT NULL,
+    FastRepairsUsed FLOAT NULL,
+    F2Time FLOAT NULL,
+    BestLapTime FLOAT NULL,
+    LastLapTime FLOAT NULL,
+	LapTimeDelta FLOAT NULL,   
+    Incident INT NOT NULL DEFAULT 0,
+	PodiumProximity FLOAT NULL,
+    LeadershipStrength FLOAT NULL,
+    StableFrontRunner FLOAT NULL,
+	AvgIncidentSeverity float null,
+	ProgressConsistency float null,
+	Overtakes INT DEFAULT 0,
+	PositionsLost int DEFAULT 0,
+	NormDriverGapToLeader float  NULL,
+	OffTrack int DEFAULT 0,
+	inpits bit DEFAULT 0,
+
+    PRIMARY KEY (CustId, Lap),
+    FOREIGN KEY (RaceID) REFERENCES Race(RaceID),
+    FOREIGN KEY (CustId) REFERENCES Driver(CustId)
+);
+
+-- Create RealTimeEvents table
+CREATE TABLE RealTimeEvents (
+    EventID INT IDENTITY(1,1) PRIMARY KEY,
+    RaceID INT NOT NULL,
+    CustId NVARCHAR(256) NOT NULL,
+    Lap FLOAT NOT NULL,
+    TrackSurface NVARCHAR(256),
+    Speed FLOAT NULL,
+    RPM FLOAT NULL,
+    Gear INT NULL,
+    CarSteer FLOAT NULL,
+	SteerIntensity float null, 
+	SteerSpeedRatio float null,
+	lapdistpct float null,
+	LapPhase NVARCHAR(50) null,
+    PitRoad BIT NULL,
+    FastRepairsUsed INT NULL,
+    RpmPerGear FLOAT NULL,
+    SpeedPerGear FLOAT NULL,
+    AggressiveManeuver FLOAT NULL,
+	CatchUpPotential FLOAT NULL,
+	AvgOvertakeRate FLOAT NULL,
+	EstTime FLOAT NULL,
+    EventType NVARCHAR(256) NULL,
+    EventTimestamp DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (CustId, Lap) REFERENCES RealTimeLapData(CustId, Lap),
+    FOREIGN KEY (RaceID) REFERENCES Race(RaceID),
+    FOREIGN KEY (CustId) REFERENCES Driver(CustId)
+);
+
+
