@@ -35,9 +35,7 @@ class RankNet(nn.Module):
         self.bn3 = nn.BatchNorm1d(128)
         self.fc4 = nn.Linear(128, 64)
         self.bn4 = nn.BatchNorm1d(64)
-        self.fc5 = nn.Linear(64, 32)
-        self.bn5 = nn.BatchNorm1d(32)
-        self.fc6 = nn.Linear(32, 1)
+        self.fc5 = nn.Linear(64, 1)
 
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(p=0.1)
@@ -59,11 +57,7 @@ class RankNet(nn.Module):
         x = self.relu(x)
         x = self.dropout(x)
 
-        x = self.bn5(self.fc5(x))
-        x = self.relu(x)
-        x = self.dropout(x)
-
-        x = self.fc6(x)
+        x = self.fc5(x)
         return x
 
 
