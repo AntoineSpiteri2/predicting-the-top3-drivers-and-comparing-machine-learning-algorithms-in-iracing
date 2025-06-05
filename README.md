@@ -12,7 +12,13 @@ Non-commercial use (including academic research) is permitted; commercial use re
 
 This repository implements a hybrid data pipeline that merges historical iRacing driver data (via the iRacing Data API) with live telemetry (via the iRacing SDK) to predict the top 3 finishers in real time. Every 3 seconds, the system recalculates podium predictions using time-decayed features and three ML models—XGBoost, Random Forest, and RankNet—showing RankNet as the most accurate. A SHAP analysis identifies key predictive features. Use cases include esports analytics dashboards and broadcast overlays.
 
+
 * Repository URL: [github.com/AntoineSpiteri2/predicting-the-top3-drivers-…](https://github.com/AntoineSpiteri2/predicting-the-top3-drivers-and-comparing-machine-learning-algorithms-in-iracing)
+* Data collection video: [YouTube video](https://www.youtube.com/watch?v=Zpz-cAR1img)
+* Model training video: [YouTube video](https://www.youtube.com/watch?v=E50G0CWH2YA)
+* RankNet Live prediction video: [YouTube video](https://www.youtube.com/watch?v=cBc5tH4wp8g)
+* Random Forest live prediction video: [YouTube video](https://www.youtube.com/watch?v=qOljzOHJHSE)
+* XGBoost live prediction video: [YouTube video](https://www.youtube.com/watch?v=a_iTzXFFBgc)
 
 ## Features and Functionality
 
