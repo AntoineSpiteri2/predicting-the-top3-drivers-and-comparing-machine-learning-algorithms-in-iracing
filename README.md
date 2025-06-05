@@ -1,2 +1,176 @@
-# predicting-the-top3-drivers-and-comparing-machine-learning-algorithms-in-iracing
-The project is a bachelor’s‐level dissertation that investigates whether machine learning models can reliably predict the top three finishers (“podium positions”) in live iRacing competitions by combining both historical driver statistics and real-time telemetry. At a high level, the work proceeds in three main stages:  Data Collection & Integration  Historical Driver Data: Using the iRacing REST API, long‐term performance metrics (e.g., season points, average finishing positions, consistency measures) are fetched for every driver in each targeted race.  Real-Time Telemetry: During live races, high-frequency telemetry streams (vehicle speed, gap to leader, lap times, incident counts, etc.) are ingested from the iRacing SDK.  These two data sources are joined in a single hybrid pipeline so that, at any given moment in a race, the model sees both a driver’s past performance “baseline” and their most recent live signals. Evaluating_Machine_Lear…  Feature Engineering & Dataset Construction  Decayed & Bucketed Telemetry: Instead of feeding raw lap-by-lap numbers directly into the models, live telemetry features are transformed into “decay‐weighted buckets” (e.g., events occurring in the last 0–25%, 25–50%, 50–75%, and 75–100% of a driver’s current stint), ensuring that more recent information carries higher weight. For instance, “number of incidents in the last five laps” or “average gap to leader over the most recent bucket” become standardized input columns.  Custom Target Metric (“RankscoreAdjusted”): Rather than just predicting literal finishing position, the authors devise an adjusted ranking score that accounts for time/distance gaps and race context, making the learning problem more robust to “mid-lap” snapshots.  Combining Static & Dynamic Features: Ultimately, each training example (i.e., one snapshot of a driver mid-race) includes:  A vector of historical attributes (career win rate, previous season ranking, track familiarity, etc.).  A set of engineered live telemetry features (decayed bucket metrics, lap recency pulses, pit-stop offsets, incident counts, etc.).  Model Training, Evaluation & Deployment  Three different machine learning architectures are compared:  XGBoost (gradient-boosted decision trees).  Random Forest (bagged decision trees).  RankNet (a pairwise neural ranking model that directly optimizes ordinal relationships).  Models are trained on a flat-file dataset of over 800 race snapshots, each labeled with the “ground truth” podium order at the moment of capture. Performance is assessed on 18 held-out races using metrics such as top-3 accuracy (i.e., whether the model correctly identifies all three podium drivers), Spearman rank correlation (how well the predicted driver ordering matches the true ordering), and additional error‐based measures.  Key Findings:  RankNet attains the highest overall generalization, achieving roughly 97% accuracy in predicting the actual top three and exhibiting minimal overfitting between training and test sets.  XGBoost occasionally achieves perfect podium accuracy on certain snapshots but shows higher variance (i.e., sometimes overfits to structured patterns in the training data).  Random Forest is fast and relatively stable for point‐estimate tasks (e.g., exact finishing position), but its rank‐order consistency under real-time constraints is weaker compared to the other two.  Live Prediction Loop: An asynchronous inference pipeline is implemented so that, every 3 seconds during a live race, the chosen model (RankNet in production) can recompute and broadcast updated podium predictions. This proves fast enough for potential integration into live broadcasts or driver-assist dashboards.  Interpretability & Practical Implications  SHAP Analysis is used to identify which features most influence the model’s predictions. Variables like “normalized gap to leader,” “driver consistency score,” and “grid position” emerge as top predictors of eventual podium finishes.  The project highlights how combining historical performance data with real-time signals produces significantly more reliable mid-race forecasts than using either data source alone.  Potential Applications include:  A “data-driven coaching” tool that signals warning flags when lesser-known drivers suddenly become podium threats.  An esports broadcast overlay that continuously shows likely podium contenders for enhanced viewer engagement.  Strategic simulators or “virtual pit-wall” dashboards that teams can use to adjust their tactics mid-race (e.g., choosing whether to pit under caution based on opponent predictions).  Limitations & Future Work  The dataset covers a limited variety of weather conditions (e.g., mostly dry, no rain‐affected races), and some telemetry channels (like brake temperatures or tyre wear) were unavailable—potentially constraining model robustness under more diverse circumstances.  Future extensions could incorporate advanced sensor feeds (if iRacing ever exposes engine/tyre-wear data), widen the variety of tracks and ambient conditions, and experiment with alternative ranking architectures (e.g., Graph Neural Networks to model inter-driver interactions).  In summary, the project demonstrates that a carefully engineered, hybrid data pipeline—melding historic driver statistics with decayed, time-bucketed live telemetry—combined with a rank-based neural model (RankNet) can very accurately forecast the top three finishers in real time. This work lays a foundation for both academic research in esports analytics and practical tools for teams, commentators, and fans.
+# Predicting Top 3 Drivers and Comparing Machine Learning Algorithms in iRacing
+
+**A real-time hybrid pipeline that merges iRacing’s historical API data with live telemetry to predict podium finishers every 3 seconds.**  
+Enabled through Python, SQL Server, and ML frameworks (XGBoost, Random Forest, RankNet + SHAP analysis).
+
+## License
+
+This project is licensed under Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).  
+Non-commercial use (including academic research) is permitted; commercial use requires written permission from the author.  
+
+## Project Overview
+
+This repository implements a hybrid data pipeline that merges historical iRacing driver data (via the iRacing Data API) with live telemetry (via the iRacing SDK) to predict the top 3 finishers in real time. Every 3 seconds, the system recalculates podium predictions using time-decayed features and three ML models—XGBoost, Random Forest, and RankNet—showing RankNet as the most accurate. A SHAP analysis identifies key predictive features. Use cases include esports analytics dashboards and broadcast overlays.
+
+* Repository URL: [github.com/AntoineSpiteri2/predicting-the-top3-drivers-…](https://github.com/AntoineSpiteri2/predicting-the-top3-drivers-and-comparing-machine-learning-algorithms-in-iracing)
+
+## Features and Functionality
+
+*   **Data Fusion:** Combines historical driver performance data with live telemetry from the iRacing simulation.
+*   **Feature Engineering:** Creates time-decayed features to emphasize recent performance and trends.
+*   **Machine Learning Models:** Trains and compares XGBoost, Random Forest, and RankNet models for top-3 prediction.
+*   **Real-time Prediction:** Provides updated predictions approximately every 3 seconds.
+*   **SHAP Analysis:**  Identifies the most influential features used by the models.
+*   **Database Integration:** Stores historical data and race results in a SQL Server database.
+*   **Esports Applications:** Designed for use in esports analytics and broadcast overlays.
+*   **Test Mode:** Allows running live data collection without writing to the database (for testing purposes).
+*   **Data Normalization:** Normalizes target variables for better model performance.
+
+## Technology Stack
+
+*   **Python:** Primary programming language.
+*   **iRacing SDK (irsdk):**  For accessing live telemetry data from iRacing.
+*   **iRacing Data API:** For fetching historical driver and race data.
+*   **Pandas:** For data manipulation and analysis.
+*   **NumPy:** For numerical computations.
+*   **Scikit-learn:**  For machine learning algorithms (RandomForest) and data preprocessing (MinMaxScaler, IterativeImputer).
+*   **XGBoost:** For gradient boosting models.
+*   **PyTorch:**  For the RankNet model.
+*   **Shap:** For SHAP (SHapley Additive exPlanations) analysis
+*   **PyODBC:** For connecting to SQL Server databases.
+*   **SQLAlchemy:** For database interaction, especially for bulk data insertion and complex queries.
+*   **Matplotlib:** For creating visualizations (e.g., model comparison plots).
+*   **Joblib:** For saving and loading trained models.
+*   **Asyncio:** For asynchronous API calls.
+*   **Threading:**  For running the asynchronous data insertion in the background.
+
+## Prerequisites
+
+1.  **iRacing Account:**  An active iRacing subscription is required to access the live telemetry and historical data.
+2.  **iRacing SDK:**  The iRacing SDK must be installed and configured to allow the script to connect to the simulator.
+3.  **iRacing Data API Credentials:** You need an iRacing username and password to authenticate with the iRacing Data API. Set these in `utils/IracingApiConnection.py`:
+
+    ```python
+    USERNAME = 'youremail'  # Replace with your iRacing username
+    PASSWORD = 'yourpassword'  # Replace with your iRacing password
+    ```
+
+4.  **SQL Server Database:** A SQL Server database is required to store historical and live race data.
+5.  **Python Dependencies:** Install the required Python packages using `pip`:
+
+    ```bash
+    pip install irsdk pandas numpy scikit-learn xgboost torch shap pyodbc sqlalchemy matplotlib joblib aiohttp
+    ```
+
+6.  **ODBC Driver:**  Install the ODBC Driver 17 for SQL Server.  The driver name should match what's configured in `utils/DatabaseConnection.py`.
+7.  **Database Connection Settings:** Configure the database connection settings in `utils/DatabaseConnection.py`:
+
+    ```python
+    server = 'ANTOINEPC\\MSSQLSERVER01'  # Update with your server name
+    database = 'racing_data'
+    driver = '{ODBC Driver 17 for SQL Server}'
+    ```
+
+## Installation Instructions
+
+1.  **Clone the Repository:**
+
+    ```bash
+    git clone https://github.com/AntoineSpiteri2/predicting-the-top3-drivers-and-comparing-machine-learning-algorithms-in-iracing.git
+    cd predicting-the-top3-drivers-and-comparing-machine-learning-algorithms-in-iracing
+    ```
+
+2.  **Install Dependencies:**
+
+    ```bash
+    pip install -r requirements.txt # Create this file with all the dependencies you have installed above if missing
+    ```
+
+3.  **Configure iRacing API Credentials:**  Edit `utils/IracingApiConnection.py` and enter your iRacing username and password.
+4.  **Configure Database Connection:** Edit `utils/DatabaseConnection.py` and enter your SQL Server connection details.
+5.  **Optional: Remap CustID:** Run `remap_ids_and_drop_new_column_with_subsession.py` ONCE to remap CustID and subsessionID, which facilitates integration:
+
+    ```bash
+    python remap_ids_and_drop_new_column_with_subsession.py
+    ```
+    **Important:** This script modifies the database structure and data. **BACK UP YOUR DATABASE BEFORE RUNNING.**
+
+## Usage Guide
+
+1.  **Run the Main Script:** Execute `Main.py` to start the application:
+
+    ```bash
+    python Main.py
+    ```
+
+2.  **Select an Option:**  The script presents a menu with the following options:
+
+    *   **1. Test-mode data collection (no DB write):** Collects live data but does not save it to the database.  Useful for testing the iRacing SDK connection and data fetching.
+    *   **2. Live data collection (save to DB):** Collects live and historical data and saves it to the database. This requires the iRacing simulator to be running and in a race session.  Also collects all historical data for drivers that are not already in the database, using iRacing Data API.
+
+        *   First it collects historical data based on the drivers participating in the active iRacing session.
+        *   Then collects live data, updating RealTimeLapData and RealTimeEvents tables with real-time information.
+
+    *   **3. Train & evaluate models:** Trains and evaluates the machine learning models (XGBoost, Random Forest, RankNet) using the data stored in the database. This option generates model comparison plots and SHAP analysis plots, displaying the results using matplotlib.  This step requires that you have run option 2 at least once to populate the database.
+    *   **4. Exit:** Exits the application.
+
+3.  **Data Collection:** When running in "Live data collection" mode (option 2), the script performs the following steps:
+
+    *   Fetches driver names and CarIdx values from the iRacing SDK.
+    *   Collects historical data for each driver using the iRacing Data API (`Data_fetching/FetchHistroical.py`).
+    *   Processes the historical data, calculates performance indices, and inserts it into the `Driver` and `PastRaceTable` tables in the database (`Data_processing_and_inputting/historical_data_pipeline.py`).
+    *   Collects live telemetry data from the iRacing SDK (`Data_fetching/FetchLive.py`).
+    *   Processes the live data, calculates various features, and inserts it into the `RealTimeLapData` and `RealTimeEvents` tables in the database (`Data_processing_and_inputting/live_data_pipeline.py`).
+    *   The live data collection runs continuously until a "Race ended successfully" message is detected or a keyboard interrupt (`Ctrl+C`) is issued.
+
+4.  **Model Training:** The model training process (`model/XGboost/Train.py`, `model/RandomForest/Train.py`, `model/Ranknet/Train.py`) involves:
+
+    *   Fetching race data from the database (`model/FetchDatabaseData.py`).
+    *   Preprocessing the data, including normalization and handling missing values.
+    *   Training XGBoost, Random Forest, and RankNet models.
+    *   Evaluating the models using metrics like RMSE, MAE, Spearman correlation, and Top 3 accuracy.
+    *   Generating and displaying model comparison plots and SHAP analysis plots.
+    *   The code also uses learning curves to validate its performance.
+
+## Code Structure
+
+*   **`Main.py`:**  The main entry point for the application. Provides the user interface and orchestrates the data collection and model training processes.
+*   **`Data_fetching/FetchHistroical.py`:**  Fetches historical driver and race data from the iRacing Data API.
+*   **`Data_fetching/FetchLive.py`:**  Retrieves live telemetry data from the iRacing SDK.
+*   **`Data_processing_and_inputting/historical_data_pipeline.py`:** Processes historical data, calculates performance indices, and inserts it into the database.
+*   **`Data_processing_and_inputting/live_data_pipeline.py`:** Processes live telemetry data and inserts it into the database.
+*   **`model/FetchDatabaseData.py`:**  Fetches race data from the database.
+*   **`model/XGboost/Train.py`:**  Trains and evaluates the XGBoost model.
+*   **`model/RandomForest/Train.py`:** Trains and evaluates the Random Forest model.
+*   **`model/Ranknet/Train.py`:** Trains and evaluates the RankNet model.
+*   **`utils/DatabaseConnection.py`:** Handles the connection to the SQL Server database and executes queries.
+*   **`utils/IracingApiConnection.py`:** Manages the connection to the iRacing Data API.
+*   **`utils/IracingSDKConnection.py`:** Manages the connection to the iRacing SDK.
+*   **`utils/NormTarget.py`:**  Provides functions for normalizing target variables.
+*   **`remap_ids_and_drop_new_column_with_subsession.py`:** Used to remap CustID and subsessionID, and to keep CustID as an integer instead of a string, for consistency.
+
+## API Documentation
+
+There is no dedicated API endpoint for this project since it uses desktop applications to function. However, the internal functions for collecting data and training the models could be adapted into APIs.
+
+## Contributing Guidelines
+
+1.  **Fork the Repository:** Fork the repository to your GitHub account.
+2.  **Create a Branch:** Create a new branch for your feature or bug fix.
+3.  **Make Changes:** Implement your changes, ensuring code quality and adherence to project standards.
+4.  **Test Thoroughly:** Test your changes to ensure they work as expected and do not introduce new issues.
+5.  **Submit a Pull Request:** Submit a pull request to the `main` branch of the original repository.
+6.  **Code Review:**  Your pull request will be reviewed by project maintainers.  Address any feedback and make necessary changes.
+
+
+
+## Data and Pretrained Models
+
+The dataset and pretrained models used by this project are **not** included in this repository. Redistribution of any data or models derived from iRacing requires explicit, written permission from iRacing.com Motorsport Simulations, LLC. Under the iRacing Terms of Use and End User License Agreement, you may not “make available to any third party … any information available through the Product, the Content, the Data, or the Trademarks” without prior consent :contentReference[oaicite:0]{index=0}. Similarly, the iRacing Website Conditions of Use prohibit using data mining, screen scraping, or other extraction tools without express permission :contentReference[oaicite:1]{index=1}. If you wish to upload or share this dataset or any pretrained models, please contact iRacing to obtain a proper license :contentReference[oaicite:2]{index=2}.
+
+
+## Contact/Support Information
+
+*   **Primary Contact:** Antoine Spiteri
+*   **GitHub:** [https://github.com/AntoineSpiteri2](https://github.com/AntoineSpiteri2)
+*   For support or questions, please open an issue on the GitHub repository.
