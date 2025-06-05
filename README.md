@@ -6,11 +6,11 @@ Enabled through Python, SQL Server, and ML frameworks (XGBoost, Random Forest, R
 ## License
 
 This project is licensed under Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).  
-Non-commercial use (including academic research) is permitted; commercial use requires written permission from the author.  
+Non-commercial use (including academic research) is permitted; commercial use requires written permission from the creator.  
 
 ## Project Overview
 
-This repository implements a hybrid data pipeline that merges historical iRacing driver data (via the iRacing Data API) with live telemetry (via the iRacing SDK) to predict the top 3 finishers in real time. Every 3 seconds, the system recalculates podium predictions using time-decayed features and three ML models—XGBoost, Random Forest, and RankNet—showing RankNet as the most accurate. A SHAP analysis identifies key predictive features. Use cases include esports analytics dashboards and broadcast overlays.
+This repository implements a hybrid data pipeline that merges historical iRacing driver data (via the iRacing Data API) with live telemetry (via the iRacing SDK) to predict the top three finishers in real-time. Every 3 seconds, the system recalculates podium predictions using time-decayed features and three ML models—XGBoost, Random Forest, and RankNet—showing RankNet as the most accurate. A SHAP analysis identifies key predictive features. Use cases include esports analytics dashboards and broadcast overlays.
 
 
 * Repository URL: [github.com/AntoineSpiteri2/predicting-the-top3-drivers-…](https://github.com/AntoineSpiteri2/predicting-the-top3-drivers-and-comparing-machine-learning-algorithms-in-iracing)
@@ -61,7 +61,9 @@ This repository implements a hybrid data pipeline that merges historical iRacing
     PASSWORD = 'yourpassword'  # Replace with your iRacing password
     ```
 
-4.  **SQL Server Database:** A SQL Server database is required to store historical and live race data.
+    This might be replaced with environment variables for better security
+
+4. **SQL Server Database:** An MS SQL Server database is required to store historical and live race data.
 5.  **Python Dependencies:** Install the required Python packages using `pip`:
 
     ```bash
@@ -86,14 +88,9 @@ This repository implements a hybrid data pipeline that merges historical iRacing
     cd predicting-the-top3-drivers-and-comparing-machine-learning-algorithms-in-iracing
     ```
 
-2.  **Install Dependencies:**
-
-    ```bash
-    pip install -r requirements.txt # Create this file with all the dependencies you have installed above if missing
-    ```
 
 3.  **Configure iRacing API Credentials:**  Edit `utils/IracingApiConnection.py` and enter your iRacing username and password.
-4.  **Configure Database Connection:** Edit `utils/DatabaseConnection.py` and enter your SQL Server connection details.
+4.  **Configure Database Connection:** Edit `utils/DatabaseConnection.py` to enter your SQL Server connection details and to create the database located under  `SQL` folder.
 5.  **Optional: Remap CustID:** Run `remap_ids_and_drop_new_column_with_subsession.py` ONCE to remap CustID and subsessionID, which facilitates integration:
 
     ```bash
@@ -157,7 +154,7 @@ This repository implements a hybrid data pipeline that merges historical iRacing
 
 ## API Documentation
 
-There is no dedicated API endpoint for this project since it uses desktop applications to function. However, the internal functions for collecting data and training the models could be adapted into APIs.
+There is no dedicated API endpoint for this project, as it utilises desktop applications to function, such as a native VS Code terminal. However, the internal functions for collecting data and training models could be adapted into APIs or other software.
 
 ## Contributing Guidelines
 
@@ -166,13 +163,13 @@ There is no dedicated API endpoint for this project since it uses desktop applic
 3.  **Make Changes:** Implement your changes, ensuring code quality and adherence to project standards.
 4.  **Test Thoroughly:** Test your changes to ensure they work as expected and do not introduce new issues.
 5.  **Submit a Pull Request:** Submit a pull request to the `main` branch of the original repository.
-6.  **Code Review:**  Your pull request will be reviewed by project maintainers.  Address any feedback and make necessary changes.
+6.  **Code Review:**  Your pull request will be reviewed by me.  Address any feedback and make necessary changes.
 
 
 
 ## Data and Pretrained Models
 
-The dataset and pretrained models used by this project are **not** included in this repository. Redistribution of any data or models derived from iRacing requires explicit, written permission from iRacing.com Motorsport Simulations, LLC. Under the iRacing Terms of Use and End User License Agreement, you may not “make available to any third party … any information available through the Product, the Content, the Data, or the Trademarks” without prior consent :contentReference[oaicite:0]{index=0}. Similarly, the iRacing Website Conditions of Use prohibit using data mining, screen scraping, or other extraction tools without express permission :contentReference[oaicite:1]{index=1}. If you wish to upload or share this dataset or any pretrained models, please contact iRacing to obtain a proper license :contentReference[oaicite:2]{index=2}.
+Under the iRacing Terms of Use and End User License Agreement, any redistribution of data or models derived from iRacing is prohibited without explicit, written permission from iRacing.com Motorsport Simulations, LLC. Specifically, you may not “make available to any third party … any information available through the Product, the Content, the Data, or the Trademarks” without prior consent. Similarly, the iRacing Website Conditions of Use prohibit the use of data-mining, screen-scraping, or other extraction tools without express authorisation. If you wish to share this dataset or any pretrained models, you must first obtain a proper license from iRacing.
 
 
 ## Contact/Support Information
