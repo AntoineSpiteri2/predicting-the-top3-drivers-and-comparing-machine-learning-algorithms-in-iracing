@@ -65,7 +65,7 @@ def collect_data(test_mode: bool, save_historical: bool) -> None:
 
 def train_models() -> None:
     # Data preparation
-    data = process_all_races(True)
+    data = process_all_races(True, False)
     data = normalize_group(data)
     # data = data[~data['Drv_Disqualified']]
     

@@ -1,5 +1,5 @@
 """
-File: remap_ids_and_drop_new_column_with_subsession.py
+File: anonymization script.py
 
 Description:
     Extends remapping of CustID → integer by also remapping PastRaceTable.subessionid → integer.

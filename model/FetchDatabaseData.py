@@ -74,19 +74,23 @@ def fetch_races() -> pd.DataFrame:
     return _fetch_dataframe("SELECT * FROM Race;")
 
 
-def fetch_drivers(race_id: int) -> pd.DataFrame:
-    return _fetch_dataframe(
-        f"""
-       SELECT DISTINCT
-            d.*
-        FROM Driver AS d
-        INNER JOIN RealTimeLapData AS l
-            ON l.RaceID = d.RaceID
-        AND l.CustID = d.CustID
-        WHERE d.RaceID = {race_id}
-        ORDER BY d.RankScoreAdjusted DESC;
-        """
-    )
+def fetch_drivers(race_id: int, livepred = False) -> pd.DataFrame:
+    
+    if livepred == True:
+        return _fetch_dataframe(f"SELECT * FROM Driver WHERE RaceID = '{race_id}';")
+    else:
+        return _fetch_dataframe(
+            f"""
+        SELECT DISTINCT
+                d.*
+            FROM Driver AS d
+            INNER JOIN RealTimeLapData AS l
+                ON l.RaceID = d.RaceID
+            AND l.CustID = d.CustID
+            WHERE d.RaceID = {race_id}
+            ORDER BY d.RankScoreAdjusted DESC;
+            """
+        )
 
 
 def fetch_lap_data(cust_id: str) -> pd.DataFrame:
@@ -403,8 +407,8 @@ def build_driver_features(driver_row: pd.Series, race_row: pd.Series) -> pd.Seri
 # ─────────────────────────── race-level aggregation ─────────────────────────
 
 
-def process_race(race_row: pd.Series) -> pd.DataFrame:
-    drivers = fetch_drivers(race_row.RaceID)
+def process_race(race_row: pd.Series, livepred = False) -> pd.DataFrame:
+    drivers = fetch_drivers(race_row.RaceID, livepred)
     if drivers.empty:
         return pd.DataFrame()
 
@@ -427,14 +431,14 @@ def process_race(race_row: pd.Series) -> pd.DataFrame:
 # ──────────────────────────── top-level entry point ─────────────────────────
 
 
-def process_all_races(verbose: bool = True) -> pd.DataFrame:
+def process_all_races(verbose: bool = True, livepred = False) -> pd.DataFrame:
     races = fetch_races()
     out_frames: List[pd.DataFrame] = []
 
     for _, race_row in races.iterrows():
         if verbose:
             print(f"▸ Processing race {race_row.RaceID}")
-        df = process_race(race_row)
+        df = process_race(race_row, livepred)
         if not df.empty:
             out_frames.append(df)
 
