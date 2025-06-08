@@ -91,10 +91,10 @@ This repository implements a hybrid data pipeline that merges historical iRacing
 
 3.  **Configure iRacing API Credentials:**  Edit `utils/IracingApiConnection.py` and enter your iRacing username and password.
 4.  **Configure Database Connection:** Edit `utils/DatabaseConnection.py` to enter your SQL Server connection details and to create the database located under  `SQL` folder.
-5.  **Optional: Remap CustID:** Run `remap_ids_and_drop_new_column_with_subsession.py` ONCE to remap CustID and subsessionID, which facilitates integration:
+5.  **Optional: Remap CustID/Subessionids:** Run `anonymization script.py` to anonymise custid's and subsession IDs to adhere to ethical guidelines:
 
     ```bash
-    python remap_ids_and_drop_new_column_with_subsession.py
+    python anonymization script.py.py
     ```
     **Important:** This script modifies the database structure and data. **BACK UP YOUR DATABASE BEFORE RUNNING.**
 
@@ -109,10 +109,10 @@ This repository implements a hybrid data pipeline that merges historical iRacing
 2.  **Select an Option:**  The script presents a menu with the following options:
 
     *   **1. Test-mode data collection (no DB write):** Collects live data but does not save it to the database.  Useful for testing the iRacing SDK connection and data fetching.
-    *   **2. Live data collection (save to DB):** Collects live and historical data and saves it to the database. This requires the iRacing simulator to be running and in a race session.  Also collects all historical data for drivers that are not already in the database, using iRacing Data API.
+    *   **2. Live data collection (save to DB):** Collects live and historical data and saves it to the database. This requires the iRacing simulator to be running and in a race session.  Also collects all historical data for drivers not already in the database, utilising the iRacing Data API.
 
-        *   First it collects historical data based on the drivers participating in the active iRacing session.
-        *   Then collects live data, updating RealTimeLapData and RealTimeEvents tables with real-time information.
+        *   First, it collects historical data based on the drivers participating in the active iRacing session, which is directly stored in the database.
+        *   Then collects live data, updating RealTimeLapData and RealTimeEvents tables with real-time information. Which will stop once the race has ended.
 
     *   **3. Train & evaluate models:** Trains and evaluates the machine learning models (XGBoost, Random Forest, RankNet) using the data stored in the database. This option generates model comparison plots and SHAP analysis plots, displaying the results using matplotlib.  This step requires that you have run option 2 at least once to populate the database.
     *   **4. Exit:** Exits the application.
@@ -150,7 +150,7 @@ This repository implements a hybrid data pipeline that merges historical iRacing
 *   **`utils/IracingApiConnection.py`:** Manages the connection to the iRacing Data API.
 *   **`utils/IracingSDKConnection.py`:** Manages the connection to the iRacing SDK.
 *   **`utils/NormTarget.py`:**  Provides functions for normalizing target variables.
-*   **`remap_ids_and_drop_new_column_with_subsession.py`:** Used to remap CustID and subsessionID, and to keep CustID as an integer instead of a string, for consistency.
+*   **`anonymization script.py`:** Used to anonymise CustID and subsessionID to adhere to ethical guidelines.
 
 ## API Documentation
 
